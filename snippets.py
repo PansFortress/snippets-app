@@ -1,8 +1,12 @@
 import logging
 import argparse
+import psycopg2
 
 #Setup basic logging
 logging.basicConfig(filename="snippets.log", level=logging.DEBUG)
+logging.debug("Connecting to PostgreSQL")
+connection = psycopg2.connect(database="snippets")
+logging.debug("Database connection established.")
 
 def put(name, snippet):
 	"""
