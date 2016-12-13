@@ -39,7 +39,7 @@ def get(name):
 
 	details = cursor.fetchone()
 	if details:
-		return details
+		return details[1]
 	else:
 		return "404: Snippet Not Found"
 
