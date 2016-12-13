@@ -14,11 +14,15 @@ def put(name, snippet):
 
 	Returns the name and the snippet
 	"""
-	command = "insert into snippets values (%s, %s)"
-	cursor = connection.cursor()
-	cursor.execute(command, (name, snippet))
-	connection.commit()
-	logging.debug("Snippet stored successfully")
+	try:
+		command = "insert into snippets values (%s, %s)"
+		cursor = connection.cursor()
+		cursor.execute(command, (name, snippet))
+		connection.commit()
+		logging.debug("Snippet stored successfully")
+	except psycopg2.IntegrityError as e:
+		connection.rollback()
+		logging.debug("Keyword already exists")
 	return name, snippet
 
 def get(name):
