@@ -43,6 +43,17 @@ def get(name):
 	else:
 		return "404: Snippet Not Found"
 
+def catalog():
+	"""
+	Retrieve all keys
+	"""
+	with connection, connection.cursor() as cursor:
+		cursor.execute("\
+			select keyword from snippets")
+		details = cursor.fetchall()
+
+	return details;
+
 def main():
 	"""Main Function"""
 	logging.info("Constructing parser")
@@ -63,6 +74,9 @@ def main():
 	get_parser = subparsers.add_parser("get", help="Retrieve a snippet")
 	get_parser.add_argument("name", help="Name of the snippet")
 
+	#Subparser for catalog command
+	get_parser = subparsers.add_parser("catalog", help="Retrieve all names")
+
 	arguments = parser.parse_args()
 	arguments = vars(arguments)
 
@@ -74,6 +88,10 @@ def main():
 	elif command == "get":
 		snippet = get(**arguments)
 		print("Retrieved snippet: {!r}".format(snippet))
+	elif command == "catalog":
+		names = catalog()
+		for name in names:
+			print(name[0])
 
 if __name__ == "__main__":
 	main()
