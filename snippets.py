@@ -52,7 +52,7 @@ def catalog():
 			select keyword from snippets")
 		details = cursor.fetchall()
 
-	return details;
+	return details
 
 def search(snippet):
 	with connection, connection.cursor() as cursor:
