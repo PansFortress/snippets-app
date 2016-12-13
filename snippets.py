@@ -23,6 +23,7 @@ def put(name, snippet):
 	except psycopg2.IntegrityError as e:
 		connection.rollback()
 		logging.debug("Keyword already exists")
+		logging.debug(e)
 	return name, snippet
 
 def get(name):
