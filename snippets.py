@@ -54,6 +54,14 @@ def catalog():
 
 	return details;
 
+def search(snippet):
+	with connection, connection.cursor() as cursor:
+		cursor.execute("\
+			select * from snippets\
+			where message like '%{}%'".format(snippet))
+		details = cursor.fetchall()
+	return details
+
 def main():
 	"""Main Function"""
 	logging.info("Constructing parser")
@@ -69,13 +77,18 @@ def main():
 	put_parser.add_argument("name", help="Name of the snippet")
 	put_parser.add_argument("snippet", help="Snippet text")
 
+	#subparser for the search command
+	logging.debug("Constructing search subparser")
+	search_parser = subparsers.add_parser("search", help="Search a snippet")
+	search_parser.add_argument("snippet", help="Snippet text")
+
 	#Subparser for the get command
 	logging.debug("Constructing get command")
 	get_parser = subparsers.add_parser("get", help="Retrieve a snippet")
 	get_parser.add_argument("name", help="Name of the snippet")
 
 	#Subparser for catalog command
-	get_parser = subparsers.add_parser("catalog", help="Retrieve all names")
+	cat_parser = subparsers.add_parser("catalog", help="Retrieve all names")
 
 	arguments = parser.parse_args()
 	arguments = vars(arguments)
@@ -92,6 +105,13 @@ def main():
 		names = catalog()
 		for name in names:
 			print(name[0])
+	elif command == "search":
+		results = search(**arguments)
+		if results:
+			for result in results:
+				print("Found {!r} from {!r}".format(result[1], result[0]))
+		else:
+			print("Found nothing")
 
 if __name__ == "__main__":
 	main()
