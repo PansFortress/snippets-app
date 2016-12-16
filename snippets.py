@@ -58,7 +58,7 @@ def search(snippet):
 	with connection, connection.cursor() as cursor:
 		cursor.execute("\
 			select * from snippets\
-			where message like '%{}%'".format(snippet))
+			where message like %s",('%' + snippet + '%',))
 		details = cursor.fetchall()
 	return details
 
@@ -98,6 +98,7 @@ def main():
 	if command == "put":
 		name, snippet = put(**arguments)
 		print("Stored {!r} as {!r}".format(snippet, name))
+		# Grab repr for whatever it is referencing, for example the above will get repr(snippet), repr(name)
 	elif command == "get":
 		snippet = get(**arguments)
 		print("Retrieved snippet: {!r}".format(snippet))
